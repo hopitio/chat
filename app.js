@@ -63,6 +63,67 @@
             }]);
     }
 
+    function create_directive_dom(module) {
+        module.directive('ngDom', ['$rootScope', function ($rootScope) {
+                return {
+                    scope: {
+                        ngDom: '@'
+                    },
+                    link: function (scope, elem) {
+                        $rootScope[scope.ngDom] = elem[0];
+                    }
+                };
+            }]);
+    }
+
+    function tieng_viet_khong_dau(s) {
+        if (typeof s == "undefined") {
+            return;
+        }
+
+        var i = 0, uni1, arr1;
+        var newclean = s;
+        uni1 = 'à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ|À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ|A';
+        arr1 = uni1.split('|');
+        for (i = 0; i < uni1.length; i++)
+            newclean = newclean.replace(uni1[i], 'a');
+
+        uni1 = 'è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ|È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ|E';
+        arr1 = uni1.split('|');
+        for (i = 0; i < uni1.length; i++)
+            newclean = newclean.replace(uni1[i], 'e');
+
+        uni1 = 'ì|í|ị|ỉ|ĩ|Ì|Í|Ị|Ỉ|Ĩ|I';
+        arr1 = uni1.split('|');
+        for (i = 0; i < uni1.length; i++)
+            newclean = newclean.replace(uni1[i], 'i');
+
+        uni1 = 'ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ|Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ|O';
+        arr1 = uni1.split('|');
+        for (i = 0; i < uni1.length; i++)
+            newclean = newclean.replace(uni1[i], 'o');
+
+        uni1 = 'ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ|Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ|U';
+        arr1 = uni1.split('|');
+        for (i = 0; i < uni1.length; i++)
+            newclean = newclean.replace(uni1[i], 'u');
+
+        uni1 = 'ỳ|ý|ỵ|ỷ|ỹ|Ỳ|Ý|Ỵ|Ỷ|Ỹ|Y';
+        arr1 = uni1.split('|');
+        for (i = 0; i < uni1.length; i++)
+            newclean = newclean.replace(uni1[i], 'y');
+
+        uni1 = 'd|Đ|D';
+        arr1 = uni1.split('|');
+        for (i = 0; i < uni1.length; i++)
+            newclean = newclean.replace(uni1[i], 'd');
+
+        newclean = newclean.toLowerCase()
+        ret = newclean.replace(/[\&]/g, '-and-').replace(/[^a-zA-Z0-9._-]/g, '-').replace(/[-]+/g, '-').replace(/-$/, '');
+
+        return ret;
+    }
+
     function create_controller(module, cfg) {
         module.controller('chatCtrl', ['$scope', '$timeout', '$apply', '$io', '$sce', function ($scope, $timeout, $apply, $io, $sce) {
                 $scope.user = cfg.user;
@@ -72,11 +133,63 @@
                 $scope.chat_bubble_active;
                 $scope.typing;
                 $scope.now;
-                $scope.hide = false;
+                $scope.hide = true;
 
                 $scope.toggle_show = function () {
                     $scope.hide = $scope.hide ? false : true;
                     sync_display();
+                };
+
+                $scope.set_user = function (user) {
+                    if (user.id == cfg.user.id)
+                        return;
+
+                    var user = $scope.users[user.id] = extend($scope.users[user.id] ? $scope.users[user.id] : {}, user);
+                    if ($scope.is_online(user)) {
+                        $scope.deps[user.department.id] = extend($scope.deps[user.department.id] ? $scope.deps[user.department.id] : {}, user.department);
+                        if (!$scope.deps[user.department.id].users)
+                            $scope.deps[user.department.id].users = {};
+                        $scope.deps[user.department.id].users[user.id] = user;
+                    }
+                };
+
+                //tính là online khi lần checkin trước trong vòng 1 phút
+                $scope.is_online = function (user) {
+                    if (!user)
+                        return false;
+                    var ret;
+                    if (!user.last_presence) {
+                        ret = false;
+                    } else {
+                        if (typeof user.last_presence == 'string')
+                            user.last_presence = new Date(user.last_presence);
+                        var d = new Date();
+                        ret = (d.getTime() - user.last_presence.getTime()) < 60000;
+                    }
+                    if (ret == false) {
+                        if ($scope.deps[user.department.id] && $scope.deps[user.department.id].users)
+                            delete $scope.deps[user.department.id].users[user.id];
+                        if ($scope.deps[user.department.id] && is_empty($scope.deps[user.department.id].users))
+                            delete $scope.deps[user.department.id];
+                    }
+                    return ret;
+                };
+
+                $scope.search_filter = function (user) {
+                    if (user.id == cfg.user.id)
+                        return;
+                    var s = tieng_viet_khong_dau(this.search);
+                    var rex = new RegExp('(' + s + ')', 'i');
+                    return user.name.match(rex) ? true : false;
+                };
+
+                $scope.search_highlight = function (str) {
+                    var s = tieng_viet_khong_dau(this.search);
+                    var rex = new RegExp('(' + s + ')', 'i');
+                    var matches = str.match(rex);
+                    var ret = str.replace(rex, '<span class="_fc-highlight">' + matches[0] + '</span>');
+                    ret = $sce.trustAsHtml(ret);
+                    return ret;
                 };
 
                 $scope.len = function (obj) {
@@ -97,8 +210,8 @@
                 });
 
                 function bind_io() {
+                    $io.on('user.list', on_user_list);
                     $io.on('user.presence', on_user_presence);
-                    $io.on('user.offline', on_user_offline);
                     $io.on('chat.display', on_chat_display);
                     $io.on('chat.message', on_chat_message);
                 }
@@ -110,60 +223,33 @@
                 }
                 update_now();
 
-                function on_user_presence(user) {
-                    if (user.id == cfg.user.id)
-                        return;
-
-                    $scope.deps[user.department.id] = extend($scope.deps[user.department.id] ? $scope.deps[user.department.id] : {}, user.department);
-
-                    var dep = $scope.deps[user.department.id];
-                    if (!dep.users) {
-                        dep.users = {};
-                    }
-
-                    dep.users[user.id] = extend(dep.users[user.id] ? dep.users[user.id] : {}, user);
-                    $scope.users[user.id] = dep.users[user.id];
+                function on_user_list(users) {
+                    for (var i in users)
+                        if (!$scope.users[users[i].id])
+                            $scope.set_user(users[i]);
                 }
 
-                function on_user_offline(user) {
-                    var dep = $scope.deps[user.department.id];
-                    if (!dep || !dep.users)
-                        return;
-                    delete dep.users[user.id];
-                    delete $scope.users[user.id];
-
-                    if (is_empty(dep.users))
-                        delete $scope.deps[dep.id];
+                function on_user_presence(user) {
+                    user.last_presence = new Date();
+                    $scope.set_user(user);
                 }
 
                 function on_chat_display(data) {
                     $scope.hide = data.hide;
-                    for (var i in data.bubbles) {
-                        var bb = data.bubbles[i];
-                        if (!$scope.deps[bb.department.id])
-                            $scope.deps[bb.department.id] = extend({'users': {}}, bb.department);
-                        if (!$scope.users[bb.id])
-                            $scope.users[bb.id] = bb;
-                        $scope.users[bb.id].messages = bb.messages;
-                    }
-                    if (data.active) {
-                        $scope.chat_bubble_active = $scope.users[data.active.id];
-                        $scope.users[data.active.id].messages = data.active.messages;
-                    } else {
-                        $scope.chat_bubble_active = null;
-                    }
+                    $scope.chat_bubbles = data.bubbles;
+                    $scope.chat_bubble_active = data.active;
                 }
 
                 function on_chat_message(msg) {
-                    var you;
+                    var uid;
                     if (msg.from == $scope.user.id)
-                        you = msg.to;
+                        uid = msg.to;
                     else if (msg.to == $scope.user.id)
-                        you = msg.from;
+                        uid = msg.from;
                     else
                         return;
 
-                    var user = $scope.users[you];
+                    var user = $scope.users[uid];
                     if (!user)
                         return;
 
@@ -172,31 +258,33 @@
                     if (!user.messages)
                         user.messages = [];
                     user.messages.push(msg);
+                    $timeout(function () {
+                        $scope.div_messages.scrollTop = $scope.div_messages.scrollHeight;
+                    });
                 }
 
                 $scope.start_chat = function (user) {
                     if ($scope.hide)
                         $scope.hide = false;
-                    $scope.chat_bubble_active = user;
+                    $scope.chat_bubble_active = user ? user.id : null;
                     if (user) {
                         var chat_bubbles = $scope.chat_bubbles;
                         var index = -1;
                         for (var i in chat_bubbles) {
-                            var item = chat_bubbles[i];
-                            if (user.id == item.id) {
+                            var uid = chat_bubbles[i];
+                            if (user.id == uid) {
                                 index = i;
                                 break;
                             }
                         }
                         //khong tim thay thi append
                         if (index == -1) {
-                            chat_bubbles.splice(0, 0, user);
+                            chat_bubbles.splice(0, 0, user.id);
                             //nếu quá số lượng xóa người xa nhất
                             if (chat_bubbles.length >= 5)
                                 chat_bubbles.splice(4, 1);
                         }
                     }
-
                     sync_display();
                 };
 
@@ -209,8 +297,10 @@
                 }
 
                 $scope.abbreviation = function (name) {
+                    if (!name)
+                        return '';
                     var match = name.match(/( .)/ig);
-                    var ret = name[0] + match.join('');
+                    var ret = name[0] + (match ? match.join('') : '');
                     return ret.replace(/ /g, '').toUpperCase();
                 };
 
@@ -228,7 +318,7 @@
                         return;
 
                     var msg = {
-                        'to': $scope.chat_bubble_active.id,
+                        'to': $scope.chat_bubble_active,
                         'text': text
                     };
                     $io.emit('chat.message', msg);
@@ -366,8 +456,11 @@
             create_service_io(module, io);
             //$apply
             create_service_apply(module);
+            //ngDom
+            create_directive_dom(module);
             //chatCtrl
             create_controller(module, self.cfg);
+
         }
 
 

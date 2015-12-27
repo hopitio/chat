@@ -77,7 +77,7 @@
 #_fc-float ._fc-btn ._fc-btn-user ._fc-avatar{
     width: 100%;
     height: 100%;
-    background: #b2dfdb;
+    background: #e0f2f1;
     display: block;
     line-height: 100%;
     text-align: center;
@@ -214,6 +214,9 @@
 #_fc-float ._fc-tab-user ._fc-list ._fc-status.online span{
     background: #00c853;
 }
+#_fc-float ._fc-tab-user ._fc-list ._fc-status.offline span{
+    background: gray;
+}
 #_fc-float ._fc-tab-user ._fc-list ._fc-user{
     height: 50px;
     position: relative;
@@ -230,7 +233,7 @@
     left: 10px;
     top: 5px;
     border-radius: 20px;
-    background: #b2dfdb;
+    background: #e0f2f1;
     overflow: hidden;
     line-height: 40px;
     text-align: center;
@@ -250,6 +253,9 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-user ._fc-name ._fc-highlight{
+    background: #fff176;
 }
 #_fc-float ._fc-tab-user ._fc-list ._fc-user ._fc-last-msg{
     position: absolute;
@@ -286,12 +292,21 @@
     overflow: hidden;
     background: #f5f5f5;
     font-size: 0.9em;
-    padding-left: 10px;
+    padding-left: 5px;
     padding-right: 100px;
     border-bottom: 1px solid #ddd;
     position: relative;
     border-top-left-radius: 10px;    
     border-top-right-radius: 10px;    
+}
+#_fc-float ._fc-messages ._fc-header ._fc-status{
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+}
+#_fc-float ._fc-messages ._fc-header ._fc-status._fc-online{
+    background: #00C853;
 }
 #_fc-float ._fc-messages ._fc-header ._fc-actions{
     position: absolute;
@@ -368,6 +383,13 @@
 #_fc-float ._fc-messages ._fc-message._fc-other ._fc-avatar img{
     width: 100%;
     height: 100%;
+}
+#_fc-float ._fc-messages ._fc-message._fc-other ._fc-avatar ._fc-no-avatar{
+    background: url('../img/no-avatar.jpg')no-repeat;
+    background-size: 22px 22px;
+    display: block;
+    height: 100%;
+    width: 100%;
 }
 #_fc-float ._fc-messages ._fc-message._fc-mine ._fc-message-text{
     background: #e3f2fd;

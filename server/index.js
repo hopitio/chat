@@ -37,9 +37,7 @@ $io.on('connection', function (socket) {
             socket.close();
             return;
         }
-
         socket.user = user;
-        $ns.join(socket, app_id, user.id);
 
         function update_department() {
             $db.collection('department').find({'id': user.department.id, 'app_id': app_id}).toArray(function (err, deps) {
@@ -65,23 +63,39 @@ $io.on('connection', function (socket) {
             });
         }
 
+        //gửi list user
+        $db.collection('user').find({'app_id': app_id}).toArray(function (err, users) {
+            if (users.length) {
+                socket.emit('user.list', users);
+            }
+        });
+
         //update department to db
         update_department();
 
-        //gửi thông báo online của tôi tới người khác
-        $ns.namespace(app_id).broadcast('user.presence', user, socket);
+        //gửi trạng thái cửa sổ cho client mới
+        var room = $ns.room(app_id, user.id);
+        socket.emit('chat.display', room.chat_display || {hide: false, bubbles: [], active: null});
+
+        $ns.namespace(app_id).broadcast('user.presence', user);
+        var room = $ns.join(socket, app_id, user.id);
+
         var sockets = $ns.namespace(app_id).sockets;
         //gửi thông báo online của người khác tới tôi
         for (var soc_id in sockets) {
             var other = sockets[soc_id];
-            if (other.user && other.user.id != socket.user.id)
+            if (other.user && other.user.id != socket.user.id) {
                 socket.emit('user.presence', other.user);
+            }
         }
     });
 
     socket.on('chat.display', function (data) {
         //broadcast to me
-        $ns.room(app_id, socket.user.id).broadcast('chat.display', data, socket);
+        var room = $ns.room(app_id, socket.user.id);
+        room.broadcast('chat.display', data, socket);
+        //save display to room
+        room.chat_display = data;
     });
 
     socket.on('chat.message', function (msg) {
@@ -89,23 +103,29 @@ $io.on('connection', function (socket) {
         msg.text = replace_html(msg.text);
         msg.from = socket.user.id;
         //broadcast to clone of me
-        $ns.room(app_id, msg.from).broadcast('chat.message', msg, socket);
+        $ns.room(app_id, msg.from).broadcast('chat.message', msg);
         //broadcast to other
-        $ns.room(app_id, msg.to).broadcast('chat.message', msg, socket);
-    });
-
-    socket.on('disconnect', function () {
-        var user = socket.user;
-        if (!user)
-            return;
-
-        setTimeout(function () {
-            var sockets = $ns.room(app_id, user.id).sockets;
-            if (is_empty(sockets))
-                $ns.namespace(app_id).broadcast('user.offline', user);
-        }, 3000);
+        $ns.room(app_id, msg.to).broadcast('chat.message', msg);
     });
 });
+
+function presence_update() {
+    for (var i in $ns.namespaces) {
+        var ns = $ns.namespaces[i];
+        for (var j in ns.rooms) {
+            var room = ns.rooms[j];
+            for (var k in room.sockets) {
+                if (room.sockets[k].user) {
+                    ns.broadcast('user.presence', room.sockets[k].user);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+//broadcast user presence
+setInterval(presence_update, 30000);
 
 function replace_html(text) {
     return text.replace(/[\u00A0-\u9999<>\&]/gim, function (i) {

@@ -1,6 +1,8 @@
 var namespaces = {};
 var gb_time = 1000;
 
+exports.namespaces = namespaces;
+
 function is_empty(obj) {
     for (var i in obj)
         return false;
@@ -34,8 +36,8 @@ function Namespace(id) {
         });
     };
 
-    self.join_room = function (socket, r_id) {
-        var room = self.create_room(r_id);
+    self.join_room = function (socket, r_id, on_room_create) {
+        var room = self.create_room(r_id, on_room_create);
         self.join(socket);
         room.join(socket);
         return room;
@@ -52,20 +54,21 @@ function Namespace(id) {
         }, gb_time);
     };
 
-    self.create_room = function (id) {
+    self.create_room = function (id, on_room_create) {
         if (self.rooms[id])
             return self.rooms[id];
-        var room = self.rooms[id] = new Room(self.ns_id, id);
+        var room = self.rooms[id] = new Room(self.ns_id, id, on_room_create);
         return room;
     };
 
 }
 
-function Room(ns_id, r_id) {
+function Room(ns_id, r_id, on_create) {
     var self = this;
     self.id = r_id;
     self.ns_id = ns_id;
     self.sockets = {};
+    self.intervals = [];
 
     self.broadcast = function (event, data, except) {
         for (var i in self.sockets)
@@ -88,11 +91,25 @@ function Room(ns_id, r_id) {
             if (self.sockets[socket.id])
                 delete self.sockets[socket.id];
             //xoa room neu trong
-            if (is_empty(self.sockets))
+            if (is_empty(self.sockets)) {
                 delete exports.namespace(self.ns_id).rooms[self.id];
+                //clear intervals
+                for (var i in self.intervals) {
+                    clearInterval(self.intervals[i]);
+                }
+                self.intervals = [];
+            }
         }, gb_time);
     };
 
+    self.set_interval = function (fn, time) {
+        var inv = setInterval(fn, time);
+        self.intervals.push(inv);
+        return inv;
+    };
+
+    if (on_create)
+        on_create.apply(self, [self]);
 }
 
 exports.namespace = function (id) {
@@ -104,11 +121,11 @@ exports.room = function (ns_id, r_id) {
     return ns.room(r_id);
 };
 
-exports.join = function (socket, ns_id, r_id) {
+exports.join = function (socket, ns_id, r_id, on_room_create) {
     var ns = namespaces[ns_id];
     if (!ns)
         ns = namespaces[ns_id] = new Namespace(ns_id);
 
-    ns.join_room(socket, r_id);
+    return ns.join_room(socket, r_id, on_room_create);
 };
 
