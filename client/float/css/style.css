@@ -1,0 +1,398 @@
+@font-face {
+    font-family: 'Fine Chat Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Fine Chat Material Icons'), local('Fine-Chat-MaterialIcons-Regular'), url(icon.woff2) format('woff2');
+}
+#_fc-float{
+    font-family: helvetica, arial, sans-serif;
+    font-size: 14px;
+    position: fixed;
+    bottom: 50px;
+    right: 20px;
+    z-index: 999;
+    display: block;
+}
+#_fc-float ._fc-assign{
+    display: none;
+}
+#_fc-float ._fc-icons {
+    font-family: 'Fine Chat Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+#_fc-float i._fc-icons.tiny{font-size: 1rem;}
+#_fc-float ._fc-shadow{
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4), 0 2px 10px 0 rgba(0, 0, 0, 0.3);
+}
+#_fc-float ._fc-btn{
+    float: right;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 10px;
+    position: relative;
+    width: 50px;
+    height: 50px;
+}
+#_fc-float ._fc-btn._fc-btn-main{
+    background: #1FA260;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+}
+#_fc-float ._fc-btn ._fc-active{
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-right: 10px solid transparent;
+    position: absolute;
+    left: 50%;
+    margin-left: -10px;
+    top: -10px;
+    border-top-color: grey;
+    position: absolute;
+    z-index: 999;
+}
+#_fc-float ._fc-btn ._fc-btn-user{
+    width: 50px;
+    height: 50px;
+    background: #ccc;
+    border-radius: 25px;
+    transition: 0.3s;
+    position: absolute;
+    left: 0;
+}
+#_fc-float ._fc-btn ._fc-btn-user ._fc-avatar{
+    width: 100%;
+    height: 100%;
+    background: #b2dfdb;
+    display: block;
+    line-height: 100%;
+    text-align: center;
+    border-radius: 25px;
+    line-height: 50px;
+    overflow: hidden;
+}
+#_fc-float ._fc-btn ._fc-btn-user ._fc-avatar img{
+    width: 100%;
+    height: 100%;
+}
+#_fc-float ._fc-btn i{
+    line-height: 60px;
+    color: white;
+}
+#_fc-float ._fc-window{
+    position: fixed;
+    bottom: 120px;
+    right: 20px;
+    width: 300px;
+    top: 20px;
+    transition: 0.3s;
+    box-sizing: border-box;
+}
+#_fc-float._fc-hide ._fc-window{
+    padding-top: 50%;
+    opacity: 0;
+    z-index: -1;
+}
+#_fc-float._fc-hide  ._fc-tab-user ._fc-list{
+    overflow: hidden;
+}
+#_fc-float._fc-hide ._fc-messages ._fc-container{
+    overflow: hidden;
+}
+#_fc-float._fc-hide ._fc-btn ._fc-active{
+    display: none;
+}
+#_fc-float._fc-hide ._fc-btn ._fc-btn-user{
+    opacity: 0;
+    z-index: -1;
+    left: 50px;
+}
+#_fc-float ._fc-window ._fc-body{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 10px;
+
+    opacity: 1;
+    box-sizing: border-box;
+}
+#_fc-float ._fc-window ._fc-body ._fc-tabs{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    overflow: hidden;
+}
+#_fc-float ._fc-window ._fc-body ._fc-tabs ._fc-tab{
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+#_fc-float ._fc-window ._fc-body ._fc-tabs ._fc-tab i{
+    line-height: 40px;
+    color: gray;
+}
+#_fc-float ._fc-window ._fc-body ._fc-tabs ._fc-tab._fc-active{
+    box-shadow: inset 0 0 4px 2px rgba(102,102,102,.1);
+    background: rgba(102,102,102,.09);
+}
+#_fc-float ._fc-window ._fc-body ._fc-tabs ._fc-tab._fc-active i,
+#_fc-float ._fc-window ._fc-body ._fc-tabs ._fc-tab:hover i{
+    color: #333;
+}
+#_fc-float ._fc-tab-user ._fc-search{
+    position: absolute;
+    bottom: 41px;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    border: none;
+    border-top: 1px solid #ccc;
+    padding: 0 10px;
+}
+#_fc-float ._fc-tab-user ._fc-list{
+    position: absolute;
+    top: 0;
+    bottom: 82px;
+    width: 100%;
+    overflow-y: auto;
+}
+#_fc-float ._fc-department-container:first-child ._fc-department{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-department{
+    background: #f5f5f5;
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 0 10px;
+    line-height: 20px;
+    color: gray;
+    cursor: pointer;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    border-bottom: 1px solid #ddd;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-department:hover{
+    text-decoration: underline;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-status{
+    position: absolute;
+    top: 33px;
+    left: 35px;
+    background: white;
+    padding: 2px;
+    border-radius: 7px;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-status span{
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    display: block;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-status.online span{
+    background: #00c853;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-user{
+    height: 50px;
+    position: relative;
+    cursor: pointer;
+    border-bottom: 1px solid #f5f5f5;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-user:hover{
+    background: #f8f8f8;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-user ._fc-avatar{
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    border-radius: 20px;
+    background: #b2dfdb;
+    overflow: hidden;
+    line-height: 40px;
+    text-align: center;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-user ._fc-avatar img{
+    width: 100%;
+    height: 100%;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-user ._fc-name{
+    position: absolute;
+    left: 55px;
+    right: 15px;
+    top: 5px;
+    height: 20px;
+    line-height: 20px;
+    color: black;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+#_fc-float ._fc-tab-user ._fc-list ._fc-user ._fc-last-msg{
+    position: absolute;
+    left: 55px;
+    right: 15px;
+    top: 25px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 0.9em;
+    color: gray;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+#_fc-float ._fc-messages{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 41px;
+}
+#_fc-float ._fc-messages ._fc-messages-inner{
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+#_fc-float ._fc-messages ._fc-header{
+    line-height: 30px;
+    top: 0;
+    left: 0;
+    right: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    background: #f5f5f5;
+    font-size: 0.9em;
+    padding-left: 10px;
+    padding-right: 100px;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    border-top-left-radius: 10px;    
+    border-top-right-radius: 10px;    
+}
+#_fc-float ._fc-messages ._fc-header ._fc-actions{
+    position: absolute;
+    text-align: right;
+    position: absolute;
+    top: 0;
+    right: 10px;
+    left: 0;
+    bottom: 0;
+}
+#_fc-float ._fc-messages ._fc-header ._fc-actions i{
+    line-height: 30px;
+    margin-left: 5px;
+    color: #616161;
+    cursor: pointer;
+    font-size: 20px;
+}
+#_fc-float ._fc-messages ._fc-header ._fc-actions i:hover{
+    color: black;
+}
+#_fc-float ._fc-messages ._fc-new-msg{
+    position: absolute;
+    line-height: 40px;
+    height: 40px;
+    bottom: 0;
+    width: 100%;
+    border: none;
+    border-top: 1px solid #ccc;
+    overflow-y: hidden;
+    padding: 0 10px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    white-space:pre-wrap;
+}
+#_fc-float ._fc-messages ._fc-container{
+    position: absolute;
+    top: 31px;
+    bottom: 40px;
+    width: 100%;
+    overflow-y:auto;
+    padding: 10px 0;
+}
+#_fc-float ._fc-messages ._fc-message{
+    position: relative;
+    margin: 5px 10px 0 10px;
+}
+#_fc-float ._fc-clear{clear: both;}
+#_fc-float ._fc-messages ._fc-message ._fc-message-text{
+    line-height: 20px;
+    border-radius: 10px;
+    padding: 0 10px;
+    font-size: 0.9em;
+    overflow-wrap: break-word;
+    display: inline-block;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+#_fc-float ._fc-messages ._fc-message._fc-mine{
+    padding-left: 80px;
+}
+#_fc-float ._fc-messages ._fc-message._fc-other{
+    padding-left: 30px;
+    padding-right: 80px;
+}
+#_fc-float ._fc-messages ._fc-message._fc-other ._fc-avatar{
+    height: 22px;
+    width: 22px;
+    border-radius: 11px;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 5px;
+}
+#_fc-float ._fc-messages ._fc-message._fc-other ._fc-avatar img{
+    width: 100%;
+    height: 100%;
+}
+#_fc-float ._fc-messages ._fc-message._fc-mine ._fc-message-text{
+    background: #e3f2fd;
+    border: 1px solid #bbdefb;
+    float: right;
+}
+#_fc-float ._fc-messages ._fc-message._fc-other ._fc-message-text{
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+}
+#_fc-float ._fc-messages ._fc-message._fc-mine._fc-sbl-next ._fc-message-text{
+    border-bottom-right-radius: 2px;
+}
+#_fc-float ._fc-messages ._fc-message._fc-mine._fc-sbl-prev ._fc-message-text{
+    border-top-right-radius: 2px;
+}
+#_fc-float ._fc-messages ._fc-message._fc-other._fc-sbl-next ._fc-message-text{
+    border-bottom-left-radius: 2px;
+}
+#_fc-float ._fc-messages ._fc-message._fc-other._fc-sbl-prev ._fc-message-text{
+    border-top-left-radius: 2px;
+}
+#_fc-float ._fc-messages ._fc-message._fc-sbl-prev{
+    margin-top: 2px;
+}
+#_fc-float ._fc-messages ._fc-message._fc-sbl-next ._fc-avatar{
+    display:none;
+}
